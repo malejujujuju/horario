@@ -1,0 +1,80 @@
+<!DOCTYPE html><html><head><meta charset='utf-8'>
+<title>Generador Horarios QF</title>
+<style>
+body{font-family:Arial;margin:20px}
+#materias{columns:2}
+table{border-collapse:collapse;width:100%}
+td,th{border:1px solid #888;padding:4px;text-align:center}
+.celda{font-size:11px}
+</style></head><body>
+<h1>Generador de Horarios QF</h1>
+<div id="materias"></div>
+<button onclick="generar()">Generar horarios</button>
+<div id="resumen"></div><div id="visor"></div>
+<script>
+const cursos=[{"name": "ASIGNATURAS", "groups": [{"group": 1, "sessions": ["Grupo 1"]}, {"group": 2, "sessions": ["Grupo 2"]}, {"group": 3, "sessions": ["Grupo 3"]}, {"group": 4, "sessions": ["Grupo 4"]}, {"group": 5, "sessions": ["Grupo 5"]}]}, {"name": "Química Analítica", "groups": [{"group": 1, "sessions": ["Lunes 11 a 13", "Miércoles 11 a 13", "Jueves 7-9 L"]}, {"group": 2, "sessions": ["Lunes 16 a 18 L", "Miércoles 16 a 18", "Jueves 16 a 18"]}]}, {"name": "Química Inorgánica", "groups": [{"group": 1, "sessions": ["Lunes 11 a 13", "Martes 7 a 9", "Miércoles 14 a 16 L"]}, {"group": 2, "sessions": ["Martes 14 a 16", "Miércoles 14 a 16", "Jueves 9 a 11 L"]}, {"group": 3, "sessions": ["Lunes 9 a 11", "Martes 16 a 18 L", "Viernes 7 a 9"]}]}, {"name": "Química Orgánica 1", "groups": [{"group": 1, "sessions": ["Lunes 14 a 16", "Martes 16 a 18 L", "Viernes 11 a 13"]}, {"group": 2, "sessions": ["Lunes 11 a 13", "Martes 9 a 11 L", "Miércoles 11 a 13"]}, {"group": 3, "sessions": ["Lunes 14 a 16", "Martes 11 a 13 L", "Jueves 11 a 13"]}, {"group": 4, "sessions": ["Lunes 11 a 13", "Martes 7 a 9 L", "Miércoles 11 a 13"]}]}, {"name": "Cálculo Integral", "groups": [{"group": 1, "sessions": ["Martes 14 a 16", "Miércoles 9 a 11", "Jueves 14 a 16"]}, {"group": 2, "sessions": ["Lunes 14 a 16", "Jueves 14 a 16", "Viernes 14 a 16"]}, {"group": 3, "sessions": ["Miércoles 14 a 16", "Jueves 9 a 11", "Viernes 14 a 16"]}]}, {"name": "Dirección y Planificación Farmacéutica", "groups": [{"group": 1, "sessions": ["Martes 11 a 13", "Jueves 9 a 11"]}, {"group": 2, "sessions": ["Martes 16 a 18", "Jueves 7 a 9"]}, {"group": 3, "sessions": ["Martes 9 a 11", "Jueves 14 a 16"]}]}, {"name": "Física 2", "groups": [{"group": 1, "sessions": ["Lunes 9 a 11", "Miércoles 7 a 9", "Viernes 7 a 9"]}, {"group": 2, "sessions": ["Lunes 9 a 11", "Miércoles 7 a 9", "Viernes 7 a 9"]}, {"group": 3, "sessions": ["Lunes 7 a 9", "Miércoles 9 a 11", "Viernes 9 a 11"]}]}, {"name": "Competencias Comunicativas 2", "groups": [{"group": 1, "sessions": ["Viernes 14 a 16"]}, {"group": 2, "sessions": ["Viernes 11 a 13"]}, {"group": 3, "sessions": ["Miércoles 7 a 9"]}]}, {"name": "Fisicoquímica", "groups": [{"group": 1, "sessions": ["Lunes 9 a 11", "Jueves 11 a 13", "Viernes 7 a 9 L"]}, {"group": 2, "sessions": ["Lunes 7 a 9", "Jueves 7 a 9", "Viernes 11 a 13 L"]}, {"group": 3, "sessions": ["Lunes 9 a 11", "Martes 7 a 9", "Viernes 9 a 11 L"]}]}, {"name": "Química Orgánica 2", "groups": [{"group": 1, "sessions": ["Lunes 11 a 13 L", "Jueves 14 a 16", "Viernes 11 a 13"]}, {"group": 2, "sessions": ["Lunes 9 a 11 L", "Martes 11 a 13", "Jueves 11 a 13"]}, {"group": 3, "sessions": ["Martes 14 a 16", "Miércoles 9 a 11 L", "Viernes 7 a 9"]}, {"group": 4, "sessions": ["Lunes 16 a 18 L", "Jueves 14 a 16", "Viernes 16 a 18"]}]}, {"name": "Bioquímica", "groups": [{"group": 1, "sessions": ["Lunes 7 a 9", "Miércoles 9 a 11 L", "Viernes 14 a 16"]}, {"group": 2, "sessions": ["Lunes 14 a 16", "Martes 14 a 16", "Miércoles 11 a 13 L"]}, {"group": 3, "sessions": ["Lunes 11 a 13", "Miércoles 7 a 9 L", "Jueves 7 a 9"]}, {"group": 4, "sessions": ["Miércoles 7 a 9", "Jueves 7 a 9", "Viernes 11 a 13"]}]}, {"name": "Elaboración de Proyectos", "groups": [{"group": 1, "sessions": ["Miércoles 14 a 16", "Viernes 9 a 11"]}, {"group": 2, "sessions": ["Jueves 9 a 11", "Viernes 14 a 16"]}, {"group": 3, "sessions": ["Martes 11 a 13", "Jueves 11 a 13"]}]}, {"name": "Anatomía Humana", "groups": [{"group": 1, "sessions": ["Martes 9 a 11", "Miércoles 16 a 18", "Jueves 9 a 11"]}, {"group": 2, "sessions": ["Martes 16 a 18", "Miércoles 14 a 16", "Viernes 7 a 9"]}, {"group": 3, "sessions": ["Lunes 14 a 16", "Miércoles 14 a 16", "Viernes 14 a 16"]}]}, {"name": "Bioestadística", "groups": [{"group": 1, "sessions": ["Martes 11 a 13", "Miércoles 11 a 13"]}, {"group": 2, "sessions": ["Martes 9 a 11", "Miércoles 9 a 11"]}, {"group": 3, "sessions": ["Martes 9 a 11", "Jueves 9 a 11"]}]}, {"name": "Farmacognosia y Fitoquímica", "groups": [{"group": 1, "sessions": ["Martes 9 a 11", "Miércoles 14 a 18 L", "Jueves 14 a 16"]}, {"group": 2, "sessions": ["Lunes 9 a 11", "Martes 14 a 18 L", "Miércoles 9 a 11"]}, {"group": 3, "sessions": ["Martes 9 a 11", "Miércoles 14 a 16", "Viernes 9 a 13 L"]}]}, {"name": "Microbiología", "groups": [{"group": 1, "sessions": ["Martes 14 a 18 L", "Viernes 7 a 9"]}, {"group": 2, "sessions": ["Miércoles 14 a 18 L", "Viernes 11 a 13"]}, {"group": 3, "sessions": ["Martes 14 a 16", "Jueves 9 a 13 L"]}]}, {"name": "Biología Celular y Molecular", "groups": [{"group": 1, "sessions": ["Lunes 11 a 13 L", "Viernes 11 a 13"]}, {"group": 2, "sessions": ["Martes 7 a 9 L", "Jueves 7 a 9"]}, {"group": 3, "sessions": ["Lunes 9 a 11", "Viernes 14 a 16 L"]}]}, {"name": "Operaciones Unitarias", "groups": [{"group": 1, "sessions": ["Lunes 9 a 11", "Miércoles 9 a 11", "Jueves 9 a 11 L"]}, {"group": 2, "sessions": ["Lunes 11 a 13", "Miércoles 11 a 13", "Jueves 11 a 13 L"]}, {"group": 3, "sessions": ["Lunes 11 a 13", "Miércoles 11 a 13", "Jueves 7 a 9 L"]}]}, {"name": "Fisiología Humana", "groups": [{"group": 1, "sessions": ["Lunes 16 a 18", "Martes 11 a 13", "Viernes 9 a 11"]}, {"group": 2, "sessions": ["Lunes 14 a 16", "Jueves 14 a 16", "Viernes 14 a 16"]}, {"group": 3, "sessions": ["Lunes 16 a 18", "Miércoles 16 a 18", "Viernes 16 a 18"]}]}, {"name": "Ciencias Farmacéuticas y Salud Pública", "groups": [{"group": 1, "sessions": ["Martes 7 a 9", "Jueves 7 a 9"]}, {"group": 2, "sessions": ["Martes 9 a 11", "Viernes 9 a 11"]}, {"group": 3, "sessions": ["Martes 11 a 13", "Viernes 7 a 9"]}]}, {"name": "Análisis Instrumental I", "groups": [{"group": 1, "sessions": ["Martes 14 a 18 L", "Miércoles 14 a 16", "Jueves 14 a 16"]}, {"group": 2, "sessions": ["Martes 14 a 16", "Miércoles 14 a 18 L", "Jueves 14 a 16"]}, {"group": 3, "sessions": ["Martes 14 a 16", "Miércoles 14 a 16", "Jueves 14 a 18 L"]}]}, {"name": "Biotecnología", "groups": [{"group": 1, "sessions": ["Lunes 14 a 17", "Miércoles 10 a 13 L"]}, {"group": 2, "sessions": ["Jueves 10 a 13", "Viernes 7 a 10 L"]}]}, {"name": "Farmacia Química", "groups": [{"group": 1, "sessions": ["Miércoles 7 a 9 L", "Viernes 7 a 9"]}, {"group": 2, "sessions": ["Lunes 7 a 9 L", "Jueves 7 a 9"]}]}, {"name": "Farmacotecnia I", "groups": [{"group": 1, "sessions": ["Martes 7 a 10 L", "Viernes 14 a 17"]}, {"group": 2, "sessions": ["Lunes 14 a 17", "Miércoles 10 a 13 L"]}]}, {"name": "Farmacología I", "groups": [{"group": 1, "sessions": ["Lunes 9 a 11", "Jueves 9 a 11", "Viernes 9 a 11"]}, {"group": 2, "sessions": ["Lunes 11 a 13", "Martes 11 a 13", "Viernes 11 a 13"]}]}, {"name": "Seminario de Bioética", "groups": [{"group": 1, "sessions": ["Lunes 11 a 13"]}, {"group": 2, "sessions": ["Lunes 9 a 11"]}]}, {"name": "Análisis Instrumental II", "groups": [{"group": 1, "sessions": ["Martes 7 a 9", "Jueves 9 a 13 L", "Viernes 11 a 13"]}, {"group": 2, "sessions": ["Martes 11 a 13", "Jueves 9 a 11", "Viernes 9 a 13 L"]}, {"group": 3, "sessions": ["Martes 11 a 13", "Miércoles 14 a 16", "Viernes 14 a 18 L"]}]}, {"name": "Bromatología", "groups": [{"group": 1, "sessions": ["Lunes 10 a 13", "Miércoles 10 a 13 L"]}, {"group": 2, "sessions": ["Lunes 7 a 10", "Miércoles 7 a 10 L"]}]}, {"name": "Medicamentos biotecnológicos", "groups": [{"group": 1, "sessions": ["Miércoles 7 a 10"]}, {"group": 2, "sessions": ["Martes 14 a 17"]}]}, {"name": "Farmacotecnia II", "groups": [{"group": 1, "sessions": ["Lunes 14 a 18 L", "Miércoles 16 a 18", "Jueves 14 a 16"]}, {"group": 2, "sessions": ["Lunes 14 a 16", "Miércoles 11 a 13", "Jueves 14 a 18 L"]}]}, {"name": "Farmacología II", "groups": [{"group": 1, "sessions": ["Lunes 7 a 9", "Martes 9 a 11", "Jueves 7 a 9"]}, {"group": 2, "sessions": ["Martes 7 a 9", "Jueves 11 a 13", "Viernes 7 a 9"]}]}, {"name": "Legislación Farmacéutica", "groups": [{"group": 1, "sessions": ["Martes 9 a 11", "Jueves 9 a 11"]}, {"group": 2, "sessions": ["Martes 7 a 9", "Jueves 7 a 9"]}]}, {"name": "Control de Calidad", "groups": [{"group": 1, "sessions": ["Lunes 9 a 13 L", "Viernes 11 a 13"]}, {"group": 2, "sessions": ["Lunes 14 a 18 L", "Viernes 14 a 16"]}]}, {"name": "Farmacia Hospitalaria", "groups": [{"group": 1, "sessions": ["Miércoles 14 a 16", "Viernes 14 a 16"]}, {"group": 2, "sessions": ["Miércoles 11 a 13", "Viernes 9 a 11"]}]}, {"name": "Síntesis Asimétrica", "groups": [{"group": 1, "sessions": ["Jueves 14 a 17"]}, {"group": 2, "sessions": ["Jueves 10 a 13"]}]}, {"name": "Nanotecnología", "groups": [{"group": 1, "sessions": ["Martes 11 a 13", "Viernes 9 a 11"]}, {"group": 2, "sessions": ["Martes 9 a 11", "Viernes 7 a 9"]}]}, {"name": "Biofarmacia y Farmacocinética", "groups": [{"group": 1, "sessions": ["Lunes 7 a 9", "Miércoles 7 a 9", "Jueves 7 a 9"]}, {"group": 2, "sessions": ["Lunes 11 a 13", "Miércoles 14 a 16", "Viernes 11 a 13"]}]}, {"name": "Toxicología", "groups": [{"group": 1, "sessions": ["Martes 7 a 9", "Miércoles 11 a 13"]}, {"group": 2, "sessions": ["Martes 11 a 13", "Miércoles 7 a 9"]}]}];
+cursos.forEach((c,i)=>{
+ document.getElementById('materias').innerHTML+=`<label><input type="checkbox" value="${i}"> ${c.name}</label><br>`;
+});
+
+function parseSesion(t){
+ let m=t.match(/(Lunes|Martes|Miércoles|Miercoles|Jueves|Viernes|Sábado|Sabado).*?(\d+)\s*(?:-|a)\s*(\d+)/i);
+ if(!m) return null;
+ return {dia:m[1].replace('Miercoles','Miércoles').replace('Sabado','Sábado'),ini:+m[2],fin:+m[3]};
+}
+function conflict(a,b){
+ for(let s1 of a.sessions){let x=parseSesion(s1); if(!x) continue;
+  for(let s2 of b.sessions){let y=parseSesion(s2); if(!y) continue;
+   if(x.dia===y.dia && x.ini<y.fin && y.ini<x.fin) return true;
+  }}
+ return false;
+}
+let horarios=[]; let actual=0;
+
+function generar(){
+ const sel=[...document.querySelectorAll('input:checked')].map(x=>cursos[+x.value]);
+ horarios=[];
+ function bt(pos,usados,det){
+  if(pos===sel.length){horarios.push(JSON.parse(JSON.stringify(det))); return;}
+  for(let g of sel[pos].groups){
+   let ok=true;
+   for(let u of usados){if(conflict(g,u)){ok=false;break;}}
+   if(ok){
+    usados.push(g);
+    det.push({materia:sel[pos].name,grupo:g.group,sessions:g.sessions});
+    bt(pos+1,usados,det);
+    usados.pop(); det.pop();
+   }
+  }
+ }
+ bt(0,[],[]);
+ actual=0;
+ document.getElementById('resumen').innerHTML=`<h3>Materias seleccionadas: ${sel.length}<br>Horarios válidos encontrados: ${horarios.length}</h3>`;
+ mostrar();
+}
+
+function mostrar(){
+ if(!horarios.length){document.getElementById('visor').innerHTML=''; return;}
+ let h=horarios[actual];
+ let out=`<button onclick="ant()">Anterior</button> <button onclick="sig()">Siguiente</button> <b>Horario ${actual+1} de ${horarios.length}</b>`;
+ out+='<table><tr><th>Hora</th><th>Lunes</th><th>Martes</th><th>Miércoles</th><th>Jueves</th><th>Viernes</th><th>Sábado</th></tr>';
+ for(let hora=6;hora<=22;hora++){
+  out+=`<tr><td>${hora}-${hora+1}</td>`;
+  for(let dia of ['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado']){
+   let txt='';
+   h.forEach(m=>m.sessions.forEach(s=>{
+    let p=parseSesion(s);
+    if(p && p.dia===dia && hora>=p.ini && hora<p.fin){txt+=m.materia+'<br>G'+m.grupo+'<br>';}
+   }));
+   out+=`<td class="celda">${txt}</td>`;
+  }
+  out+='</tr>';
+ }
+ out+='</table><h3>Grupos seleccionados</h3><ul>';
+ h.forEach(m=> out+=`<li>${m.materia} → Grupo ${m.grupo}</li>`);
+ out+='</ul>';
+ document.getElementById('visor').innerHTML=out;
+}
+function ant(){if(actual>0){actual--;mostrar();}}
+function sig(){if(actual<horarios.length-1){actual++;mostrar();}}
+</script></body></html>
